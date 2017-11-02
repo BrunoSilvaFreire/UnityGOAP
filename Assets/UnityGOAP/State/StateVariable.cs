@@ -24,6 +24,11 @@ namespace UnityGOAP.State {
         /// </summary>
         public StateVariable() { }
 
+        /// <summary>
+        /// Creates
+        /// </summary>
+        /// <param name="key">The key this variable coresponds to.</param>
+        /// <param name="value">The value of this variable</param>
         public StateVariable(string key, object value) {
             this.key = key;
             this.value = value;
