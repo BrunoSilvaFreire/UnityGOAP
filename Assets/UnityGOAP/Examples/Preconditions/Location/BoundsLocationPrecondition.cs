@@ -8,12 +8,12 @@ namespace UnityGOAP.Examples.Preconditions.Location {
             Bounds = bounds;
         }
 
-        public override Vector3 GetTargetPosition() {
+        protected override Vector3 GetTargetPosition() {
             return Bounds.center;
         }
 
-        public override bool IsMet() {
-            return Bounds.Contains(Entity.Position);
+        public override bool IsMet(GOAPAgent agent) {
+            return Bounds.Contains(agent.GetProviderAs<Examples.Entity>().Position);
         }
     }
 }

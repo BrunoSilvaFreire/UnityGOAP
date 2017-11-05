@@ -4,13 +4,14 @@ using UnityGOAP.Examples.Actions.Entity;
 using UnityGOAP.Examples.Preconditions.Location;
 using UnityGOAP.Examples.Preconditions.Misc;
 using UnityGOAP.Examples.Util;
+using UnityGOAP.State;
 
 namespace UnityGOAP.Examples.Actions {
     public class TalkToAction : EntityAction {
         private readonly NearEntityPreconditionWrapper nearPrecondition;
 
         public TalkToAction(Examples.Entity targetEntity) {
-            nearPrecondition = new NearEntityPreconditionWrapper(targetEntity, GetMinimumDistance(targetEntity, Entity));
+            nearPrecondition = NearEntityPreconditionWrapper.CreateWrapper<NearEntityPreconditionWrapper>();
         }
 
         private static float GetMinimumDistance(Examples.Entity targetEntity, Examples.Entity entity) {
@@ -25,7 +26,11 @@ namespace UnityGOAP.Examples.Actions {
             return 0;
         }
 
-        public override bool IsPossible(GOAPAgent agent) {
+        public override float CalculateMotivation(GOAPAgent agent) {
+            return 1;
+        }
+
+        public override bool IsPossible(GOAPAgent agent, EntityState state) {
             // Although this action requires two entities to be within the hearing range of one another, which requires 
             // entities to move themselves (if they are not already), this "location required" condition cannot 
             // negate the "talk to" action itself, an entity can talk to whichever entity it wants to (in most countries),

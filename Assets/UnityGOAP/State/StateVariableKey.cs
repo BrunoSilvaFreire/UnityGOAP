@@ -15,5 +15,9 @@
             Key = key;
             DefaultValue = defaultValue;
         }
+
+        public override string ToString() {
+            return string.Format("StateVariableKey<{0}>(Key: {1}, DefaultValue: {2})", typeof(T).Name, Key, DefaultValue);
+        }
     }
 }

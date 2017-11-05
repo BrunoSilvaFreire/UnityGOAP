@@ -10,9 +10,21 @@ namespace UnityGOAP.State {
     /// on this entity.
     /// </summary>
     [Serializable]
-    public class EntityState {
+    public sealed class EntityState {
         [SerializeField]
-        private List<StateVariable> stateVariables = new List<StateVariable>();
+        private List<StateVariable> stateVariables;
+
+        public EntityState() {
+            stateVariables = new List<StateVariable>();
+        }
+
+        public EntityState(IEnumerable<StateVariable> variables) {
+            stateVariables = new List<StateVariable>(variables);
+        }
+
+        public EntityState Clone() {
+            return new EntityState(stateVariables);
+        }
 
         /// <summary>
         /// All the <see cref="StateVariable"/>s currently stored in this entity.
@@ -33,6 +45,7 @@ namespace UnityGOAP.State {
         /// <param name="value">The new value of the key.</param>
         /// <typeparam name="T">The type of the <see cref="value"/>, must be the as as the key's typeparam.</typeparam>
         public void SetValue<T>(StateVariableKey<T> key, T value) {
+            Debug.Log("Setting " + key + " to " + value);
             FindVariable(key).Value = value;
         }
 
@@ -64,7 +77,13 @@ namespace UnityGOAP.State {
                 }
             }
             //Check if found a coresponding variable, or create a new one with the default value
-            return variable ?? (variable = new StateVariable(expectedString, key.DefaultValue));
+            return variable ?? (variable = CreateAndAdd(key));
+        }
+
+        private StateVariable CreateAndAdd<T>(StateVariableKey<T> key) {
+            var v = new StateVariable(key.Key, key.DefaultValue);
+            stateVariables.Add(v);
+            return v;
         }
     }
 }

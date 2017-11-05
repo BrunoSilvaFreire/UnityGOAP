@@ -7,18 +7,16 @@ namespace UnityGOAP.Examples.Util {
     [Serializable]
     public sealed class NearEntityPreconditionWrapper : EntityPreconditionWrapper<NearEntityPrecondition, Entity> {
         private float distanceThreshold;
+        public NearEntityPreconditionWrapper() { }
 
         public NearEntityPreconditionWrapper(Entity target, float distanceThreshold) : base(target) {
             this.distanceThreshold = distanceThreshold;
         }
 
-        protected override Func<Entity, NearEntityPrecondition> LoadPreconditionCreator() {
-            return Creator;
-        }
-
-        private NearEntityPrecondition Creator(Entity entity) {
+        protected override NearEntityPrecondition CreatePrecondition(Entity entity) {
             return new NearEntityPrecondition(entity, distanceThreshold);
         }
+
 
         public float DistanceThreshold {
             get {
@@ -36,20 +34,25 @@ namespace UnityGOAP.Examples.Util {
     /// </summary>
     /// <typeparam name="P"></typeparam>
     /// <typeparam name="E"></typeparam>
-    public abstract class EntityPreconditionWrapper<P, E> where P : EntityPrecondition<E> where E : Entity {
+    public abstract class EntityPreconditionWrapper<P, E> where P : IEntityContainer<E> where E : Entity {
+        public static T CreateWrapper<T>() where T : EntityPreconditionWrapper<P, E>, new() {
+            var wrapper = new T();
+            wrapper.ReloadPrecondition();
+            return wrapper;
+        }
+
         [SerializeField]
         private E target;
 
         [SerializeField]
         private P precondition;
 
-        private readonly Func<E, P> preconditionCreator;
+        protected abstract P CreatePrecondition(E entity);
+        protected EntityPreconditionWrapper() { }
 
         protected EntityPreconditionWrapper(E target) {
             this.target = target;
-            preconditionCreator = LoadPreconditionCreator();
         }
-        protected abstract Func<E, P> LoadPreconditionCreator();
 
         public P Precondition {
             get {
@@ -68,7 +71,14 @@ namespace UnityGOAP.Examples.Util {
         }
 
         protected void ReloadPrecondition() {
-            precondition = preconditionCreator(target);
+            precondition = CreatePrecondition(target);
+        }
+    }
+
+    public interface IEntityContainer<E> where E : Entity {
+        E Entity {
+            get;
+            set;
         }
     }
 }

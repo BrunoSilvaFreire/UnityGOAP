@@ -1,15 +1,22 @@
 ﻿using UnityEngine;
+using UnityGOAP.Examples.Event;
 using UnityGOAP.State;
 
 namespace UnityGOAP.Examples {
-    public class GroundEntity : Entity { }
-
-    public class AirEntity : Entity { }
-
     public abstract class Entity : EntityStateProvider {
         public string Name;
-
         public float MinimumHearableDistance;
+        public GOAPAgent GOAPAgent;
+
+        private void Start() {
+            Configure(GOAPAgent);
+        }
+
+        protected abstract void Configure(GOAPAgent goapAgent);
+
+        private void OnMouseDown() {
+            EntityClickedEvent.Instance.Invoke(this);
+        }
 
         public Vector3 Position {
             get {

@@ -9,7 +9,7 @@ namespace UnityGOAP.Examples {
     /// </summary>
     public static class StateVariables {
         public static readonly StateVariableKey<bool> IsSleeping = new StateVariableKey<bool>("sleeping");
-        public static readonly StateVariableKey<Vector2> TargetLocation = new StateVariableKey<Vector2>("targetLocation");
+        public static readonly StateVariableKey<Vector3> TargetLocation = new StateVariableKey<Vector3>("targetLocation");
 
         public static StateVariableKey<bool> IsTalkingTo(Entity other) {
             return new StateVariableKey<bool>(string.Format("talking.{0}", other.Name));
